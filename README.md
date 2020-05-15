@@ -1,10 +1,10 @@
 
 
-SIRIUS is a domain specific library for electronic structure calculations.
+SIRIUS is a domain specific library for electronic structure calculations, developed and mantained at CSCS.
 
 Please check the original repository: https://github.com/electronic-structure/SIRIUS
 
-This repository is a snapshot of the develop branch of SIRIUS. It was forked on Feb 22 2020. 
+This repository is a snapshot of the develope branch of SIRIUS. It was forked on Feb 22 2020. 
 
 We intend to experiment a few things:
 
