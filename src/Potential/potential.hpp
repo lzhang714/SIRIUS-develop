@@ -857,6 +857,54 @@ class Potential : public Field4D
          *  3) symmetrize effective potential */
         fft_transform(-1);
 
+        /* Apply a low-pass filter on iterstitial (total) effective potential; 
+         * Technically this is to scale the pw coefficients of v_eff by multiplying it 
+         * with an exponential factor: exp{ -2 * c1 * [ |G| / |G_max| ]^c2 }; 
+         * where |G| is length of the G-vector and |G_max| is the maximum length, and the 
+         * two user-defined parameters have values c1 = c2 = 4.0, following ELK 6.3.2. */
+        
+        if (ctx_.full_potential() && ctx_.parameters_input().pw_filter_) { 
+            double c1 = ctx_.parameters_input().pw_filter_c1_; 
+            double c2 = ctx_.parameters_input().pw_filter_c2_; 
+            mdarray<double_complex, 1> scaled_veff_pw;
+            scaled_veff_pw = mdarray<double_complex, 1>(ctx_.gvec().num_gvec());
+            
+            //std::vector<double_complex> scaled_veff_pw;
+            //scaled_veff_pw.clear();
+            
+            for (int ig = 0; ig < ctx_.gvec().num_gvec(); ig++) {
+                double len_G = ctx_.gvec().gvec_cart<index_domain_t::global>(ig).length();
+                //scaled_veff_pw(ig) = (-2.0 * c1 * std::pow(len_G / ctx_.pw_cutoff(), c2)) * veff_pw(ig);
+                //scaled_veff_pw.push_back( (-2.0 * c1 * std::pow(len_G / ctx_.pw_cutoff(), c2)) * veff_pw(ig) );
+
+                //double_complex tmp = (-2.0 * c1 * std::pow(len_G / ctx_.pw_cutoff(), c2)) * veff_pw(ig);
+                //veff_pw_(ig) = scaled_veff_pw(ig);
+                veff_pw_(ig) = (-2.0 * c1 * std::pow(len_G / ctx_.pw_cutoff(), c2)) * veff_pw(ig);
+            }
+
+            //set_veff_pw(scaled_veff_pw);
+
+            //std::copy(scaled_veff_pw, scaled_veff_pw + ctx_.gvec().num_gvec(), veff_pw_.at(memory_t::host));
+
+
+            //for (int igloc = ig0; igloc < ctx_.gvec().count(); igloc++) {
+            //    auto len = ctx_.gvec().gvec_cart<index_domain_t::local>(igloc).length(); 
+            //    // G_max: ctx_.pw_cutoff(); 
+            //}
+
+            //for (int iat = 0; iat < unit_cell_.num_atom_types(); iat++) {
+            //    #pragma omp parallel for schedule(static)
+            //    for (int igloc = ig0; igloc < ctx_.gvec().count(); igloc++) {
+            //        auto len = ctx_.gvec().gvec_cart<index_domain_t::local>(igloc).length();
+            //        for (int l = 0; l <= ctx_.lmax_rho(); l++) {
+            //            sbessel_mom_(l, igloc, iat) = std::pow(unit_cell_.atom_type(iat).mt_radius(), l + 2) *
+            //                                          sbessel_mt_(l + 1, igloc, iat) / len;
+            //        }
+            //    }
+            //}
+            
+        }
+
         if (ctx_.control().print_hash_) {
             auto h = effective_potential().hash_f_pw();
             if (ctx_.comm().rank() == 0) {
