@@ -189,6 +189,21 @@ class Simulation_parameters
         return control_input_.verbosity_;
     }
 
+    inline bool pw_filter() const
+    {
+        return parameters_input_.pw_filter_;
+    }
+
+    inline int pw_filter_c1() const
+    {
+        return parameters_input_.pw_filter_c1_;
+    }
+
+    inline int pw_filter_c2() const
+    {
+        return parameters_input_.pw_filter_c2_;
+    }
+
     inline int lmax_apw() const
     {
         return parameters_input_.lmax_apw_;
