@@ -495,6 +495,15 @@ struct Parameters_input
     /// Maximum l for potential
     int lmax_pot_{8};
 
+    /// Low pass filter on/off switch
+    bool pw_filter_{true};
+
+    /// Low pass filter for potential, parameter c1
+    int pw_filter_c1_{4};
+
+    /// Low pass filter for potential, parameter c2
+    int pw_filter_c2_{4};
+
     /// Number of dimensions of the magnetization and effective magnetic field (0, 1 or 3).
     int num_mag_dims_{0};
 
@@ -589,6 +598,9 @@ struct Parameters_input
             ngridk_         = section.value("ngridk", ngridk_);
             shiftk_         = section.value("shiftk", shiftk_);
             num_dft_iter_   = section.value("num_dft_iter", num_dft_iter_);
+            pw_filter_      = section.value("pw_filter", pw_filter_);
+            pw_filter_c1_   = section.value("pw_filter_c1", pw_filter_c1_);
+            pw_filter_c2_   = section.value("pw_filter_c2", pw_filter_c2_);
             energy_tol_     = section.value("energy_tol", energy_tol_);
             /* potential_tol is obsolete */
             density_tol_    = section.value("potential_tol", density_tol_);
